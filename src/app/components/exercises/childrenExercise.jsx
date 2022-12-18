@@ -13,25 +13,40 @@ const ChildrenExercise = () => {
                 <code>React.Children.toArray</code>
             </p>
 
-            <Component num="1"/>
-            <Component num="2"/>
-            <Component num="3"/>
-
+            <ComponentList>
+                <Component />
+                <Component />
+                <Component />
+            </ComponentList>
         </CollapseWrapper>
     );
 };
 
-const Component = ({ num }) => {
-    return React.Children.map(num, () => {
-        return <div> {num} Компонент списка</div>;
-    });
+const ComponentList = ({ children }) => {
+    const arrayOfChildren = React.Children.toArray(children);
+    console.log(arrayOfChildren);
+    return React.Children.map(arrayOfChildren, (child) =>
+        React.cloneElement(child, {
+            ...child.props,
+            num: +child.key.replace(".", "") + 1
+        })
+    );
 };
 
-Component.propTypes = {
+ComponentList.propTypes = {
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node
     ])
+};
+
+const Component = ({ num }) => {
+    console.log(num);
+    return <div>{num} Компонент списка</div>;
+};
+
+Component.propTypes = {
+    num: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 };
 
 export default ChildrenExercise;
